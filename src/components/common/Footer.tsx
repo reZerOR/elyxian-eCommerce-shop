@@ -3,13 +3,14 @@ import logotext from "@/assets/brand-text.png";
 import { InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import Image from "next/image";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const socialLinks = [
     {
       name: "Instagram",
-      url: "https://www.facebook.com/",
+      url: "https://www.facebook.com/MRK012?mibextid=ZbWKwL",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -40,6 +41,21 @@ export function Footer() {
     {
       name: "Women",
       to: "/shoes",
+    },
+  ];
+
+  const contacts = [
+    {
+      text: "01879-797697",
+      icon: <Phone size={16}/>,
+    },
+    {
+      text: "elyxian.eu@gmail.com",
+      icon: <Mail size={16}/>,
+    },
+    {
+      text: "Chittagong, Bangladesh",
+      icon: <MapPin size={16}/>,
     },
   ];
   return (
@@ -83,12 +99,13 @@ export function Footer() {
         </div>
         <div className="mt-8 flex flex-wrap z-10 items-center justify-between relative">
           <div className="w-full md:w-auto mb-4 md:mb-0">
-            <address className="not-italic">
               <p className="font-bold font-syne">Elyxian</p>
-              <p>123 Business Street</p>
-              <p>Bayzid, Chattogram</p>
-              <p>Bangladesh</p>
-            </address>
+              {contacts.map((item, i) => (
+                <div className="flex items-center gap-2">
+                  {item.icon}
+                  <p>{item.text}</p>
+                </div>
+              ))}
           </div>
           <div className="flex flex-col-reverse gap-2 items-center">
             <div className="w-full md:w-auto text-sm">
