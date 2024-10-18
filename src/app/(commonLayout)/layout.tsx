@@ -1,3 +1,4 @@
+import { Footer } from "@/components/common/Footer";
 import Navbar from "@/components/common/Navbar";
 import React, { ReactNode } from "react";
 interface TChildren {
@@ -8,6 +9,7 @@ const layout = ({ children }: TChildren) => {
     <div>
       <Navbar />
       {children}
+      <Footer/>
     </div>
   );
 };

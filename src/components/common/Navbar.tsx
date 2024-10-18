@@ -1,28 +1,26 @@
 import logo from "@/assets/brand-logo.png";
-import logotext from '@/assets/brand-text.png'
+import logotext from "@/assets/brand-text.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 const menu = [
   {
-    name: "Facility",
-    to: "/facility",
+    name: "Shoes",
+    to: "/shoes",
   },
   {
-    name: "About",
-    to: "/about",
+    name: "Men",
+    to: "/shoes",
   },
   {
-    name: "Contact Us",
-    to: "/contact",
+    name: "Women",
+    to: "/shoes",
   },
 ];
 
 const Navbar = () => {
-
   // console.log(user);
   const navlinks = menu.map((item, idx) => (
     <Link
@@ -39,7 +37,6 @@ const Navbar = () => {
         <Link href={"/"} className="flex items-center rtl:space-x-reverse">
           <Image src={logo} className="w-10" alt="plant logo" />
           <Image src={logotext} className="w-20" alt="plant logo" />
-          
         </Link>
 
         {/* for mobile */}
@@ -51,14 +48,7 @@ const Navbar = () => {
           </div>
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="md:hidden bg-primary1"
-              >
-                <MenuIcon className="size-6 text-white" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
+              <MenuIcon className="size-6 md:hidden block text-black" />
             </SheetTrigger>
             <SheetContent side="left" className="bg-orange-100 font-popins">
               <div className="grid gap-1 w-[200px] p-4">{navlinks}</div>
