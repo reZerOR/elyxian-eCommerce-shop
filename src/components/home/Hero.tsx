@@ -23,7 +23,7 @@ const Hero = () => {
               - With{" "}
               <span className="font-syne font-bold text-red-500">ELYXIAN</span>
             </p>
-            <button className="bg-red-500 text-base md:text-xl group w-full md:w-auto justify-center items-center text-white md:py-4 py-2 px-10 flex gap-2 rounded-2xl">
+            <button className="bg-red-500 text-base md:text-xl group w-full md:w-auto justify-center items-center text-white md:py-4 py-2 px-10 flex gap-2 rounded-xl">
               Shop Now <ArrowRight  className="group-hover:translate-x-2 transition-all duration-500"/>
             </button>
           </div>

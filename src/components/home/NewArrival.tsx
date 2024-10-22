@@ -12,7 +12,7 @@ const NewArrival = () => {
   };
   return (
     <Container className="py-10 space-y-6">
-      <Heading>New Arrival</Heading>
+      <Heading>New <span className="text-red-500">Arrival</span></Heading>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
           <ProductCard key={i} {...fakeData} />
@@ -22,4 +22,4 @@ const NewArrival = () => {
   );
 };
 
-export default NewArrival;
+export default NewArrival

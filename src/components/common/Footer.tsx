@@ -101,7 +101,7 @@ export function Footer() {
           <div className="w-full md:w-auto mb-4 md:mb-0">
               <p className="font-bold font-syne">Elyxian</p>
               {contacts.map((item, i) => (
-                <div className="flex items-center gap-2">
+                <div key={i} className="flex items-center gap-2">
                   {item.icon}
                   <p>{item.text}</p>
                 </div>
