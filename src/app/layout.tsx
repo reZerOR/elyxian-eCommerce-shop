@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {Syne, Inter} from 'next/font/google'
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body
         className={`${syne.variable} ${inter.variable} antialiased font-inter`}
       >
+        <Toaster richColors position="top-center" duration={2000}/>
         {children}
       </body>
     </html>
