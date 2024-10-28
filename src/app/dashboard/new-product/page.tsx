@@ -1,6 +1,11 @@
 "use client";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
+import {
+  Control,
+  InternalFieldName,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -15,6 +20,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultipleSelector, { Option } from "@/components/ui/multi-select";
+import { Minus } from "lucide-react";
+import { Plus } from "lucide-react";
+
+const sizeQuantitySchema = z.object({
+  size: z.string().trim().min(1, "Size is required"),
+  quantity: z.number().int().positive("Quantity must be a positive number"),
+});
 
 const formSchema = z.object({
   title: z.string().trim().min(1, { message: "Title is required" }),
@@ -23,7 +35,57 @@ const formSchema = z.object({
   thisIsFor: z.array(z.string()).nonempty(),
   price: z.number().min(0),
   comparePrice: z.number().min(0),
+  sizeQuantities: z
+    .array(sizeQuantitySchema)
+    .min(1, "At least one size-quantity pair is required"),
 });
+
+interface MultiSelectorInputProps {
+  control: Control<any>;
+  options: Option[];
+  placeholder: string;
+  label: string;
+  name: InternalFieldName;
+}
+
+const MultiSelectorInput: React.FC<MultiSelectorInputProps> = ({
+  control,
+  options,
+  placeholder,
+  label,
+  name,
+}) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <MultipleSelector
+              options={options}
+              placeholder={placeholder}
+              defaultOptions={options}
+              value={field.value?.map(
+                (value: string) =>
+                  options.find((opt: Option) => opt.value === value) || {
+                    value,
+                    label: value,
+                  }
+              )}
+              onChange={(options: Option[]) =>
+                field.onChange(options.map((option: Option) => option.value))
+              }
+            />
+          </FormControl>
+
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
 
 export default function MyForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -33,10 +95,16 @@ export default function MyForm() {
       description: "",
       categories: [],
       thisIsFor: [],
+      sizeQuantities: [{ size: "", quantity: 0 }],
     },
   });
-  console.log('rendered');
-  
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "sizeQuantities",
+  });
+
+  console.log("rendered");
 
   const OPTIONS: Option[] = [
     { label: "nextjs", value: "nextjs" },
@@ -108,64 +176,22 @@ export default function MyForm() {
 
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-6">
-            <FormField
+            <MultiSelectorInput
               control={form.control}
               name="categories"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categories</FormLabel>
-                  <FormControl>
-                    <MultipleSelector
-                      options={OPTIONS}
-                      placeholder="Select Categories"
-                      defaultOptions={OPTIONS}
-                      value={field.value?.map(
-                        (value) =>
-                          OPTIONS.find((opt) => opt.value === value) || {
-                            value,
-                            label: value,
-                          }
-                      )}
-                      onChange={(options) =>
-                        field.onChange(options.map((option) => option.value))
-                      }
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              placeholder="Select categories"
+              options={OPTIONS}
+              label="Categories"
             />
           </div>
 
           <div className="col-span-6">
-            <FormField
+            <MultiSelectorInput
               control={form.control}
               name="thisIsFor"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>This is for</FormLabel>
-                  <FormControl>
-                    <MultipleSelector
-                      options={OPTIONS}
-                      placeholder="Select Categories"
-                      defaultOptions={OPTIONS}
-                      value={field.value?.map(
-                        (value) =>
-                          OPTIONS.find((opt) => opt.value === value) || {
-                            value,
-                            label: value,
-                          }
-                      )}
-                      onChange={(options) =>
-                        field.onChange(options.map((option) => option.value))
-                      }
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              placeholder="Choose genders for this item."
+              options={OPTIONS}
+              label="This is for"
             />
           </div>
         </div>
@@ -221,6 +247,66 @@ export default function MyForm() {
             />
           </div>
         </div>
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex items-end space-x-2">
+            <FormField
+              control={form.control}
+              name={`sizeQuantities.${index}.size`}
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel htmlFor={`size-${index}`}>Size</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      id={`size-${index}`}
+                      placeholder="e.g., S, M, L"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`sizeQuantities.${index}.quantity`}
+              render={({ field: { value, onChange, ...field } }) => (
+                <FormItem className="flex-1">
+                  <FormLabel htmlFor={`quantity-${index}`}>Quantity</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      id={`quantity-${index}`}
+                      type="number"
+                      placeholder="Add quantity"
+                      value={value || ""}
+                      onChange={(e) => onChange(e.target.valueAsNumber || 0)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {index > 0 && (
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => remove(index)}
+                aria-label="Remove size"
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        ))}
+        <Button
+          type="button"
+          onClick={() => append({ size: "", quantity: 0 })}
+          variant="outline"
+          className="w-full"
+        >
+          <Plus className="h-4 w-4 mr-2" /> Add Size
+        </Button>
         <Button type="submit">Submit</Button>
       </form>
     </Form>
