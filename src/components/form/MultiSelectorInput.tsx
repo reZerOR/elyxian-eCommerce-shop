@@ -1,4 +1,4 @@
-import { Control, InternalFieldName } from "react-hook-form";
+import { Control} from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import MultipleSelector, { Option } from "../ui/multi-select";
 
@@ -6,7 +6,7 @@ export interface CommonInputProps {
   control: Control<any>;
   placeholder: string;
   label: string;
-  name: InternalFieldName;
+  name: string;
 }
 
 interface MultiSelectorInputProps extends CommonInputProps {

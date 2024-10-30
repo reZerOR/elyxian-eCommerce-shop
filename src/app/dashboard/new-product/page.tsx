@@ -12,44 +12,46 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Option } from "@/components/ui/multi-select";
-import { Minus } from "lucide-react";
+import { Minus, Trash } from "lucide-react";
 import { Plus } from "lucide-react";
 import MultiSelectorInput from "@/components/form/MultiSelectorInput";
-import AnyTypeInput from "@/components/form/AnyTypeInput";
+import CustomInput from "@/components/form/CustomInput";
 import Container from "@/components/common/Container";
+import { categories, genderOptions } from "@/lib/variables";
+import { productSchema } from "@/lib/FormValidations";
 
-const sizeQuantitySchema = z.object({
-  size: z.string().trim().min(1, "Size is required"),
-  quantity: z.number().int().positive("Quantity must be a positive number"),
-});
+type FormValues = z.infer<typeof productSchema>;
 
-const urlRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/;
-
-const img = z.object({
-  img: z.string().regex(urlRegex, { message: "Please enter a valid URL" }),
-});
-
-const formSchema = z.object({
-  title: z.string().trim().min(1, { message: "Title is required" }),
-  description: z.string().trim().min(1, { message: "Description is required" }),
-  categories: z.array(z.string()).nonempty(),
-  thisIsFor: z.array(z.string()).nonempty(),
-  price: z.number().min(0),
-  comparePrice: z.number().min(0),
-  images: z.array(img).min(1, "At least one image is required"),
-  sizeQuantities: z
-    .array(sizeQuantitySchema)
-    .min(1, "At least one size-quantity pair is required"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+const DeleteButton = ({ deleteFun }: { deleteFun: () => void }) => {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      onClick={() => deleteFun()}
+    >
+      <Trash className="text-red-500" />
+    </Button>
+  );
+};
+const AddButton = ({ addFun, text }: { addFun: () => void; text: string }) => {
+  return (
+    <Button
+      type="button"
+      onClick={() => addFun()}
+      variant="outline"
+      className="w-full"
+      size="default"
+    >
+      <Plus className="h-4 w-4 mr-2" />{" "}{text}
+    </Button>
+  );
+};
 
 export default function MyForm() {
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(productSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -80,28 +82,7 @@ export default function MyForm() {
 
   console.log("rendered");
 
-  const categories: Option[] = [
-    { label: "Sneakers", value: "Sneakers" },
-    { label: "Slides", value: "Slides" },
-    { label: "Formal", value: "Formal" },
-    { label: "Keds", value: "Keds" },
-    { label: "Boots", value: "Boots" },
-    { label: "Sports", value: "Sports" },
-    { label: "Accessories", value: "Accessories" },
-    { label: "Loafers", value: "Loafers" },
-    { label: "Sandals", value: "Sandals" },
-    { label: "Casual", value: "Casual" },
-    { label: "Other", value: "Other" },
-  ];
-
-  const genderOptions: Option[] = [
-    { label: "Men", value: "Men" },
-    { label: "Women", value: "Women" },
-    { label: "Boys", value: "Boys" },
-    { label: "Girls", value: "Girls" },
-  ];
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: FormValues) {
     try {
       console.log(values);
       toast(
@@ -122,7 +103,7 @@ export default function MyForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 max-w-3xl mx-auto py-10"
         >
-          <AnyTypeInput
+          <CustomInput
             control={form.control}
             name="title"
             placeholder="Sneaker etc."
@@ -173,159 +154,73 @@ export default function MyForm() {
 
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-6">
-              <FormField
+              <CustomInput
                 control={form.control}
+                label="Price"
                 name="price"
-                render={({ field: { value, onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="1450"
-                        type="number"
-                        value={value || ""} // This is the key fix
-                        onChange={(event) =>
-                          onChange(event.target.valueAsNumber || 0)
-                        }
-                        {...field}
-                        min={0}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder="e,g 1450"
+                type="number"
               />
             </div>
 
             <div className="col-span-6">
-              <FormField
+              <CustomInput
                 control={form.control}
+                label="Compare Price"
                 name="comparePrice"
-                render={({ field: { value, onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Compare Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Price to compare"
-                        type="number"
-                        value={value || ""} // This is the key fix
-                        onChange={(event) =>
-                          onChange(event.target.valueAsNumber || 0)
-                        }
-                        {...field}
-                        min={0}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder="Price to compare"
+                type="number"
               />
             </div>
           </div>
           {sizeFields.map((field, index) => (
             <div key={field.id} className="flex items-end space-x-2">
-              <FormField
-                control={form.control}
-                name={`sizeQuantities.${index}.size`}
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel htmlFor={`size-${index}`}>Size</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id={`size-${index}`}
-                        placeholder="e.g., S, M, L"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`sizeQuantities.${index}.quantity`}
-                render={({ field: { value, onChange, ...field } }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel htmlFor={`quantity-${index}`}>
-                      Quantity
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id={`quantity-${index}`}
-                        type="number"
-                        placeholder="Add quantity"
-                        value={value || ""}
-                        onChange={(e) => onChange(e.target.valueAsNumber || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex-1">
+                <CustomInput
+                  control={form.control}
+                  name={`sizeQuantities.${index}.size`}
+                  htmlFor={`size-${index}`}
+                  placeholder="e.g., S, M, L"
+                  label="Size"
+                />
+              </div>
+              <div className="flex-1">
+                <CustomInput
+                  control={form.control}
+                  name={`sizeQuantities.${index}.quantity`}
+                  htmlFor={`quantity-${index}`}
+                  placeholder="Add quantity"
+                  type="number"
+                  label="Quantity"
+                />
+              </div>
               {index > 0 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeSize(index)}
-                  aria-label="Remove size"
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
+                <DeleteButton deleteFun={() => removeSize(index)} />
               )}
             </div>
           ))}
-          <Button
-            type="button"
-            onClick={() => appendSize({ size: "", quantity: 0 })}
-            variant="outline"
-            className="w-full"
-          >
-            <Plus className="h-4 w-4 mr-2" /> Add Size
-          </Button>
+          <AddButton
+            text="Add Size"
+            addFun={() => appendSize({ size: "", quantity: 0 })}
+          />
           {imageFields.map((field, index) => (
             <div key={field.id} className="flex items-end space-x-2">
-              <FormField
-                control={form.control}
-                name={`images.${index}.img`}
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel htmlFor={`image-${index}`}>
-                      Image URL {index + 1}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id={`image-${index}`}
-                        placeholder="Enter image URL"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex-1">
+                <CustomInput
+                  control={form.control}
+                  name={`images.${index}.img`}
+                  htmlFor={`image-${index}`}
+                  placeholder="e,g https://image.url"
+                  label="Image"
+                />
+              </div>
+
               {index > 0 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeImage(index)}
-                  aria-label="Remove image"
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
+                <DeleteButton deleteFun={() => removeImage(index)} />
               )}
             </div>
           ))}
-          <Button
-            type="button"
-            onClick={() => appendImage({ img: "" })}
-            variant="outline"
-            className="w-full"
-          >
-            <Plus className="h-4 w-4 mr-2" /> Add Image
-          </Button>
+          <AddButton addFun={() => appendImage({ img: "" })} text="Add Image" />
           <Button type="submit">Submit</Button>
         </form>
       </Form>
