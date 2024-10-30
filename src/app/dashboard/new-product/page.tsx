@@ -20,6 +20,7 @@ import CustomInput from "@/components/form/CustomInput";
 import Container from "@/components/common/Container";
 import { categories, genderOptions } from "@/lib/variables";
 import { productSchema } from "@/lib/FormValidations";
+import { addProduct } from "@/actions";
 
 type FormValues = z.infer<typeof productSchema>;
 
@@ -44,7 +45,7 @@ const AddButton = ({ addFun, text }: { addFun: () => void; text: string }) => {
       className="w-full"
       size="default"
     >
-      <Plus className="h-4 w-4 mr-2" />{" "}{text}
+      <Plus className="h-4 w-4 mr-2" /> {text}
     </Button>
   );
 };
@@ -82,17 +83,23 @@ export default function MyForm() {
 
   console.log("rendered");
 
-  function onSubmit(values: FormValues) {
+  async function onSubmit(values: FormValues) {
+    const loadingToast = toast.loading("Adding Product");
     try {
       console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const result = await addProduct(values);
+      console.log(result);
+
+      if (result) {
+        toast.success("Product Added Successfully", {
+          id: loadingToast,
+        });
+      }
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error("Failed to submit the form. Please try again.", {
+        id: loadingToast,
+      });
     }
   }
 

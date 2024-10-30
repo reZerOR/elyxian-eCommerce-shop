@@ -1,12 +1,29 @@
 import { model, models, Schema } from "mongoose";
 
-const ProductSchema = new Schema(
+export interface TProduct {
+  title: string;
+  price: number;
+  comparePrice: number;
+  description: string;
+  sizeQuantities: {
+    size: string;
+    quantity: number;
+  }[];
+  thisIsFor: string[];
+  categories: string[];
+  isDeleted: boolean;
+  images: {
+    img: string;
+  }[];
+}
+
+const ProductSchema = new Schema<TProduct>(
   {
     title: { type: String, required: true },
     price: { type: Number, required: true },
-    comparePrice: { type: Number },
-    description: { type: String },
-    sizes: [
+    comparePrice: { type: Number, required: true },
+    description: { type: String, required: true },
+    sizeQuantities: [
       {
         _id: false,
         size: { type: String, required: true },
@@ -15,10 +32,10 @@ const ProductSchema = new Schema(
     ],
     thisIsFor: [{ type: String, _id: false }],
     categories: [{ type: String, _id: false }],
-    images: [{ type: String, _id: false }],
+    images: [{ _id: false, img: { type: String } }],
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-export default models.Product || model("Product", ProductSchema);
+export const ProductModel = models.Product || model<TProduct>("Product", ProductSchema);
