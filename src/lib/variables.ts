@@ -20,3 +20,19 @@ export const genderOptions: Option[] = [
   { label: "Boys", value: "Boys" },
   { label: "Girls", value: "Girls" },
 ];
+
+ export const priceFilter = [
+  {
+    value: "default",
+    text: "Default",
+  },
+  {
+    value: "asc",
+    text: "Low to High",
+  },
+  {
+    value: "dsc",
+    text: "High to Low",
+  },
+];
+

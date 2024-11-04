@@ -12,21 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
-const priceFilter = [
-  {
-    value: "default",
-    text: "Default",
-  },
-  {
-    value: "asc",
-    text: "Low to High",
-  },
-  {
-    value: "dsc",
-    text: "High to Low",
-  },
-];
+import { Option } from "../ui/multi-select";
+import { categories, genderOptions, priceFilter } from "@/lib/variables";
+import MultiFilter from "./MultiFilter";
 
 const ProductFilter = () => {
   const searchParams = useSearchParams();
@@ -35,6 +23,8 @@ const ProductFilter = () => {
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get("search") || ""
   );
+  const categoryParam = searchParams.get("category");
+  const genderParam = searchParams.get("gender");
   useEffect(() => {
     const handler = setTimeout(() => {
       searchTerm ? params.set("search", searchTerm) : params.delete("search");
@@ -53,6 +43,21 @@ const ProductFilter = () => {
       : params.set("priceFilter", value);
     router.push(`?${params.toString()}`);
   };
+
+  const handleCatgory = (option: Option[]) => {
+    console.log(option);
+    option.length
+      ? params.set("category", option.map((item) => item.value).join(","))
+      : params.delete("category");
+    router.push(`?${params.toString()}`);
+  };
+  const handleGender = (option: Option[]) => {
+    console.log(option);
+    option.length
+      ? params.set("gender", option.map((item) => item.value).join(","))
+      : params.delete("gender");
+    router.push(`?${params.toString()}`);
+  };
   return (
     <div className="w-full rounded-xl p-2 bg-red-500 space-y-4">
       <div className="flex items-center bg-white rounded-md">
@@ -67,12 +72,12 @@ const ProductFilter = () => {
       <div>
         <Label className="text-white">Filter by price</Label>
         <div className="flex items-center bg-white rounded-md">
-          <Filter />
+          <Filter size={18} className="ml-2" />
           <Select
             onValueChange={handleSelect}
             defaultValue={searchParams.get("priceFilter") || "default"}
           >
-            <SelectTrigger className="bg-white border-white">
+            <SelectTrigger className="bg-white focus-visible:ring-0 border-white">
               <SelectValue placeholder="Default" />
             </SelectTrigger>
             <SelectContent>
@@ -85,6 +90,20 @@ const ProductFilter = () => {
           </Select>
         </div>
       </div>
+      <MultiFilter
+        handlefunc={handleCatgory}
+        placeholder="category"
+        label="Filter by category"
+        option={categories}
+        param={categoryParam}
+      />
+      <MultiFilter
+        handlefunc={handleGender}
+        placeholder="gender"
+        label="Filter by gender"
+        option={genderOptions}
+        param={genderParam}
+      />
     </div>
   );
 };
