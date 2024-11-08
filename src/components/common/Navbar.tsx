@@ -7,8 +7,8 @@ import Image from "next/image";
 
 const menu = [
   {
-    name: "Shoes",
-    to: "/shoes",
+    name: "Products",
+    to: "/products",
   },
   {
     name: "Men",

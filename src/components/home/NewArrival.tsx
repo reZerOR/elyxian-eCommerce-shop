@@ -2,8 +2,7 @@ import React from "react";
 import Heading from "../common/Heading";
 import Container from "../common/Container";
 import ProductCard from "../common/ProductCard";
-import { fakeData } from "@/app/(commonLayout)/products/page";
-
+import { fakeData } from "@/lib/variables";
 const NewArrival = () => {
   return (
     <Container className="py-10 space-y-6">
