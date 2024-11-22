@@ -1,7 +1,7 @@
 "use server";
 import { connectToDatabase } from "@/configs/mongoose";
 import { ProductModel, TProduct } from "@/models/product.model";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 export const getProducts = async () => {
   cookies(); //added because its prevent caching by default
@@ -10,7 +10,7 @@ export const getProducts = async () => {
   const result = await ProductModel.find();
   console.log(result);
 
-  return Math.floor(Math.random() * 100) + 1;
+  return result;
 };
 
 export const addProduct = async (payload: Omit<TProduct, "isDeleted">) => {
@@ -18,8 +18,11 @@ export const addProduct = async (payload: Omit<TProduct, "isDeleted">) => {
   try {
     const result = await ProductModel.create(payload);
     console.log(result);
-    
-    return result.toObject();
+    const plainResult = {
+      ...result.toObject(),
+      _id: result._id.toString(), // Convert ObjectId to a string
+    };
+    return plainResult;
   } catch (error) {
     console.log(error);
     return error;

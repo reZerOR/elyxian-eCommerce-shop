@@ -1,4 +1,4 @@
-import { model, models, Schema } from "mongoose";
+import { Model, model, models, Schema } from "mongoose";
 import { StaticImageData } from "next/image";
 
 export interface TProduct {
@@ -41,5 +41,5 @@ const ProductSchema = new Schema<TProduct>(
   { timestamps: true }
 );
 
-export const ProductModel =
+export const ProductModel: Model<TProduct> =
   models.Product || model<TProduct>("Product", ProductSchema);
