@@ -2,6 +2,7 @@ import { Model, model, models, Schema } from "mongoose";
 import { StaticImageData } from "next/image";
 
 export interface TProduct {
+  _id: string;
   title: string;
   price: number;
   comparePrice: number;
