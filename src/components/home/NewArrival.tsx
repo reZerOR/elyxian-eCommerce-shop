@@ -20,7 +20,7 @@ const NewArrival = async () => {
         New <span className="text-red-500">Arrival</span>
       </Heading>
       {productData.success && productData.data.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 md:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {productData.data.map((item, i) => (
             <ProductCard key={i} {...item} />
           ))}

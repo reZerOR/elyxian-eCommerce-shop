@@ -1,28 +1,30 @@
 import { TProduct } from "@/models/product.model";
 import Image from "next/image";
 import React from "react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { PackageCheck, ShoppingCart } from "lucide-react";
+import { Badge } from "../ui/badge";
 
-const ProductCard: React.FC<TProduct> = ({ images, title, price, _id}) => {
+const ProductCard: React.FC<TProduct> = ({
+  images,
+  title,
+  price,
+  _id,
+  sizeQuantities,
+}) => {
   return (
-    // <div className="p-2 md:p-4 group relative rounded-lg bg-slate-50 hover:shadow-[35px_34px_29px_-15px_rgba(212,212,212,0.69)] transition-all duration-200">
-    //   <Image
-    //     src={images?.[0].img}
-    //     alt={title}
-    //     width={250}
-    //     height={200}
-    //     className="mx-auto transition-all duration-200 scale-90 group-hover:scale-100"
-    //   />
-    //   <p className="absolute px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full md:pb-1 md:pt-2 md:px-4 md:text-base top-6">
-    //     Tk {price}
-    //   </p>
-    //   <p className="md:text-xl pl-[7px] font-bold font-syne">{title}</p>
-    // </div>
-    <Card className="group">
+    <Card className="relative flex flex-col border-red-200 shadow-none group">
       <div className="p-2">
-        <CardHeader className="rounded-lg bg-slate-200">
+        <CardHeader className="rounded-lg bg-slate-200/60">
           <Image
             src={images?.[0].img}
             alt={title}
@@ -32,14 +34,26 @@ const ProductCard: React.FC<TProduct> = ({ images, title, price, _id}) => {
           />
         </CardHeader>
       </div>
-      <CardContent>
-        <CardTitle><Link href={`/products/${_id}`}>{title}</Link></CardTitle>
-        <CardFooter>
-          <Button>
-            Buy Now
+      <CardContent className="flex flex-col justify-between flex-1">
+        <CardTitle className="text-sm md:text-base">
+          <Link href={`/products/${_id}`}>{title}</Link>
+        </CardTitle>
+        <CardDescription className="flex flex-wrap gap-2 my-[2px] md:my-0">
+          <Badge className="flex gap-1 bg-green-500">
+            <PackageCheck size={16} />{" "}
+            {sizeQuantities.reduce((acc, curr) => acc + curr.quantity, 0)}{" "}
+            Available
+          </Badge>
+        </CardDescription>
+        <CardFooter className="justify-self-end">
+          <Button className="w-full font-semibold bg-red-800 hover:bg-red-900 font-syne">
+            <ShoppingCart /> Buy Now
           </Button>
         </CardFooter>
       </CardContent>
+      <p className="absolute px-2 text-sm font-semibold text-white bg-red-800 rounded-md md:text-base top-2 right-2">
+        tk {price}
+      </p>
     </Card>
   );
 };
