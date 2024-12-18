@@ -2,7 +2,7 @@ import Heading from "../common/Heading";
 import Container from "../common/Container";
 import ProductCard from "../common/ProductCard";
 import { TProduct } from "@/models/product.model";
-const fetchProductData = async () => {
+export const fetchProductData = async () => {
   const res = await fetch("http://localhost:3000/api/product", {cache: 'no-store'});
   if (!res.ok) {
     throw new Error("Failed to fetch product data");

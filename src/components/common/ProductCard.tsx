@@ -41,7 +41,7 @@ const ProductCard: React.FC<TProduct> = ({
         <CardDescription className="flex flex-wrap gap-2 my-[2px] md:my-0">
           <Badge className="flex gap-1 bg-green-500">
             <PackageCheck size={16} />{" "}
-            {sizeQuantities.reduce((acc, curr) => acc + curr.quantity, 0)}{" "}
+            {sizeQuantities?.reduce((acc, curr) => acc + curr.quantity, 0)}{" "}
             Available
           </Badge>
         </CardDescription>

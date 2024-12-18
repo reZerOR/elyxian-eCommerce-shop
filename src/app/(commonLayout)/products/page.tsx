@@ -2,11 +2,9 @@ import Container from "@/components/common/Container";
 import ProductFilter from "@/components/products/ProductFilter";
 import ProductCard from "@/components/common/ProductCard";
 import { TProduct } from "@/models/product.model";
-import { fakeData } from "@/lib/variables";
+import { fetchProductData } from "@/components/home/NewArrival";
 
-
-
-const ClientProductPage = ({
+const ClientProductPage = async ({
   searchParams,
 }: {
   searchParams: Record<string, string>;
@@ -16,9 +14,12 @@ const ClientProductPage = ({
   const genders = searchParams.gender?.split(",") || [];
   const priceSort = searchParams.priceFilter || "";
   const searchQuery = searchParams.search?.toLowerCase() || "";
+  const productData = await fetchProductData();
+  
 
   // Filter function
   const filterProducts = (products: TProduct[]) => {
+    if(products.length === 0) return [];
     return products
       .filter((product) => {
         // Category filter
@@ -51,7 +52,7 @@ const ClientProductPage = ({
   };
 
   // Apply filters to fakeData
-  const filteredProducts = filterProducts(fakeData);
+  const filteredProducts = filterProducts(productData.data || []);
 
   return (
     <Container>
@@ -60,10 +61,15 @@ const ClientProductPage = ({
           <ProductFilter />
         </div>
         <div>
-          <div className="basis-3/4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {filteredProducts.map((item, i) => (
-              <ProductCard key={i} {...item} />
-            ))}
+          <div className="grid grid-cols-2 gap-4 basis-3/4 md:grid-cols-3 lg:grid-cols-4">
+            {
+              filteredProducts.length > 0 ? (
+                filteredProducts.map((item, i) => (
+                  <ProductCard key={i} {...item} />
+                ))) : (
+                <p>Wheres is all the producs go</p>
+              )
+            }
           </div>
         </div>
       </div>

@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
   cookies()
   const searchParams = req.nextUrl.searchParams
   const limit = searchParams.get('limit')
-  console.log(limit);
   
   await connectToDatabase();
   try {
