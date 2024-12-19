@@ -1,34 +1,38 @@
-import { ArrowBigRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Container from "../common/Container";
 import { FlipWords } from "../ui/FlipWords";
 import ShoesCarousel from "./ShoesCarousel";
+import Link from "next/link";
 
 const Hero = () => {
   const words = ["Comfortable", "Stylish", "Durable"];
   return (
     <div className="bg-red-500/5">
       <Container>
-        <div className="lg:py-40 pt-20 flex flex-col lg:flex-row lg:items-center">
+        <div className="flex flex-col pt-20 lg:py-40 lg:flex-row lg:items-center">
           <div className="lg:w-1/2">
             <h1 className="text-4xl md:text-6xl font-syne font-bold leading-[125%]">
-              Discover {" "}
+              Discover{" "}
               <FlipWords
                 words={words}
-                className="text-4xl md:text-6xl font-syne font-bold text-red-500"
+                className="text-4xl font-bold text-red-500 md:text-6xl font-syne"
               />{" "}
               <br />
               Shoes that <br /> Keep you Moving
             </h1>
-            <p className="font-medium text-sm md:text-base mt-4 mb-7">
+            <p className="mt-4 text-sm font-medium md:text-base mb-7">
               - With{" "}
-              <span className="font-syne font-bold text-red-500">ELYXIAN</span>
+              <span className="font-bold text-red-500 font-syne">ELYXIAN</span>
             </p>
-            <button className="bg-red-500 text-base md:text-xl group w-full md:w-auto justify-center items-center text-white md:py-4 py-2 px-10 flex gap-2 rounded-xl">
-              Shop Now <ArrowRight  className="group-hover:translate-x-2 transition-all duration-500"/>
-            </button>
+            <Link href="/products">
+              <button className="flex items-center justify-center w-full gap-2 px-10 py-2 text-base text-white bg-red-500 md:text-xl group md:w-auto md:py-4 rounded-xl">
+                Shop Now{" "}
+                <ArrowRight className="transition-all duration-500 group-hover:translate-x-2" />
+              </button>
+            </Link>
           </div>
           <div className="lg:w-1/2">
-            <ShoesCarousel/>
+            <ShoesCarousel />
           </div>
         </div>
       </Container>
