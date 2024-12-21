@@ -82,11 +82,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     <div className="container px-4 py-8 mx-auto">
       <div className="grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
-          <div className="relative w-full overflow-hidden border rounded-lg aspect-square">
+          <div className="relative flex items-center justify-center overflow-hidden border rounded-lg w-ful aspect-square">
             <Image src={selectedImage!}
             width={250}
             height={200}
-            alt={product?.data?.title!} />
+            alt={product?.data?.title!} 
+            className="object-contain"/>
           </div>
           <div className="grid grid-cols-5 gap-2">
             {product?.data?.images.map((image, index) => (
@@ -140,7 +141,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           {/* size and quantities */}
           <div className="space-y-2">
             <h3 className="font-semibold">Size</h3>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               {product?.data?.sizeQuantities.map(
                 (sq, index) =>
                   sq.quantity > 0 && (
