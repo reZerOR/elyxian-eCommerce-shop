@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { StaticImageData } from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Minus, Cross, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,27 +16,9 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     success: boolean;
     data: TProduct;
   }>(id && `/api/product/${id}`, fetcher);
-  console.log(product)
-  
-  // const product = {
-  //   title: "Classic Sneakers",
-  //   price: 80.0,
-  //   comparePrice: 100.0,
-  //   description: "Comfortable and stylish classic sneakers.",
-  //   sizeQuantities: [
-  //     { size: "L", quantity: 7 },
-  //     { size: "M", quantity: 15 },
-  //     { size: "XL", quantity: 10 },
-  //   ],
-  //   thisIsFor: ["Men"],
-  //   categories: ["Sneakers"],
-  //   isDeleted: false,
-  //   images: [{ img: fakeimag }, {img: img2}],
-  //   createdAt: "2024-11-08T00:00:00.000Z",
-  //   updatedAt: "2024-11-08T00:00:00.000Z",
-  // };
+  console.log(product);
   const [selectedImage, setSelectedImage] = useState(
-    product?.data?.images[0]?.img
+    product?.data?.images[0]?.img || ''
   );
   const [quantity, setQuantity] = useState(1);
   const [selectSize, SetSelectSize] = useState<string | null>(null);
@@ -44,6 +26,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   const handleImageClick = (img: StaticImageData | string) => {
     setSelectedImage(img);
   };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -83,11 +66,14 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       <div className="grid gap-8 md:grid-cols-2">
         <div className="space-y-4">
           <div className="relative flex items-center justify-center overflow-hidden border rounded-lg w-ful aspect-square">
-            <Image src={selectedImage!}
-            width={250}
-            height={200}
-            alt={product?.data?.title!} 
-            className="object-contain"/>
+            <Image
+              src={selectedImage! || product?.data?.images[0]?.img}
+              width={250}
+              height={200}
+              alt={product?.data?.title!}
+              priority={true}
+              className="object-contain"
+            />
           </div>
           <div className="grid grid-cols-5 gap-2">
             {product?.data?.images.map((image, index) => (
@@ -111,6 +97,17 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             {product?.data?.title}
           </h1>
           <p className="text-gray-600">{product?.data?.description}</p>
+          {/* prices */}
+          <div className="flex space-x-4">
+            <span className="text-2xl font-bold">
+              Tk {product?.data?.price.toFixed(2)}
+            </span>
+            {product?.data?.comparePrice! > product?.data?.price! && (
+              <span className="text-xl text-gray-500 line-through">
+                Tk {product?.data?.comparePrice.toFixed(2)}
+              </span>
+            )}
+          </div>
           <div>
             {totalQuantity! > 0 ? (
               <div>
@@ -125,17 +122,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                   Out of stock
                 </div>
               </div>
-            )}
-          </div>
-          {/* prices */}
-          <div className="flex space-x-4">
-            <span className="text-2xl font-bold">
-              Tk {product?.data?.price.toFixed(2)}
-            </span>
-            {product?.data?.comparePrice! > product?.data?.price! && (
-              <span className="text-xl text-gray-500 line-through">
-                Tk {product?.data?.comparePrice.toFixed(2)}
-              </span>
             )}
           </div>
           {/* size and quantities */}
