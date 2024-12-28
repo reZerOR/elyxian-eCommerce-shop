@@ -18,7 +18,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   }>(id && `/api/product/${id}`, fetcher);
   console.log(product);
   const [selectedImage, setSelectedImage] = useState(
-    product?.data?.images[0]?.img || ''
+    product?.data?.images[0]?.img || ""
   );
   const [quantity, setQuantity] = useState(1);
   const [selectSize, SetSelectSize] = useState<string | null>(null);
@@ -64,32 +64,34 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   return (
     <div className="container px-4 py-8 mx-auto">
       <div className="grid gap-8 md:grid-cols-2">
-        <div className="space-y-4">
-          <div className="relative flex items-center justify-center overflow-hidden border rounded-lg w-ful aspect-square">
-            <Image
-              src={selectedImage! || product?.data?.images[0]?.img}
-              width={250}
-              height={200}
-              alt={product?.data?.title!}
-              priority={true}
-              className="object-contain"
-            />
-          </div>
-          <div className="grid grid-cols-5 gap-2">
-            {product?.data?.images.map((image, index) => (
-              <button
-                key={index}
-                className="relative w-full overflow-hidden border rounded-lg aspect-square"
-                onClick={() => handleImageClick(image.img)}
-              >
-                <Image
-                  src={image.img}
-                  width={100}
-                  height={100}
-                  alt={`${product.data.title} ${index + 1}`}
-                />
-              </button>
-            ))}
+        <div className="justify-self-center">
+          <div className="mx-auto space-y-4">
+            <div className="relative flex items-center justify-center overflow-hidden border rounded-lg xl:w-3/4 aspect-square">
+              <Image
+                src={selectedImage! || product?.data?.images[0]?.img}
+                width={350}
+                height={300}
+                alt={product?.data?.title!}
+                priority={true}
+                className="object-contain"
+              />
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {product?.data?.images.map((image, index) => (
+                <button
+                  key={index}
+                  className="relative w-full overflow-hidden border rounded-lg aspect-square"
+                  onClick={() => handleImageClick(image.img)}
+                >
+                  <Image
+                    src={image.img}
+                    width={100}
+                    height={100}
+                    alt={`${product.data.title} ${index + 1}`}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="space-y-4">
