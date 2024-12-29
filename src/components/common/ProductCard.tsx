@@ -46,9 +46,11 @@ const ProductCard: React.FC<TProduct> = ({
           </Badge>
         </CardDescription>
         <CardFooter className="justify-self-end">
-          <Button className="w-full font-semibold bg-red-800 hover:bg-red-900 font-syne">
-            <ShoppingCart /> Buy Now
-          </Button>
+          <Link href={`/products/${_id}`} className="w-full">
+            <Button className="w-full font-semibold bg-red-800 hover:bg-red-900 font-syne">
+              <ShoppingCart /> Buy Now
+            </Button>
+          </Link>
         </CardFooter>
       </CardContent>
       <p className="absolute px-2 text-sm font-semibold text-white bg-red-800 rounded-md md:text-base top-2 right-2">

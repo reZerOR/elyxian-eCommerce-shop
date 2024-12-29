@@ -2,13 +2,14 @@
 
 import Image, { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
-import { Plus, Minus, Cross, X } from "lucide-react";
+import { Plus, Minus, Cross, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import useSWR from "swr";
 import { fetcher } from "@/lib/utils";
 import { TProduct } from "@/models/product.model";
+import { useCart } from "@/store/useCart";
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -16,6 +17,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     success: boolean;
     data: TProduct;
   }>(id && `/api/product/${id}`, fetcher);
+  const {addToCart} = useCart()
   console.log(product);
   const [selectedImage, setSelectedImage] = useState(
     product?.data?.images[0]?.img || ""
@@ -33,6 +35,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   if (!product?.data) {
     return <div>Product not found</div>;
   }
+
   const handleQuantityChange = (amount: number) => {
     if (selectSize) {
       const selectedSizeQuantity = product?.data?.sizeQuantities.find(
@@ -51,6 +54,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   const handleAddtoCart = () => {
     if (selectSize) {
       toast.success("Added successfully");
+      addToCart(product.data, selectSize!, quantity);
     } else {
       toast.warning("Please select size!");
     }
@@ -114,14 +118,14 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             {totalQuantity! > 0 ? (
               <div>
                 {/* <div className="bg-green-500 rounded-full size-3"></div> */}
-                <div className="inline px-2 py-1 bg-green-200 rounded-full">
-                  {totalQuantity} In Stock
+                <div className="inline-flex items-center gap-2 px-2 py-1 bg-green-200 rounded-full">
+                 <div className="bg-green-500 rounded-full size-3"></div> {totalQuantity} In Stock
                 </div>
               </div>
             ) : (
               <div>
-                <div className="inline px-2 py-1 bg-red-200 rounded-full">
-                  Out of stock
+                <div className="inline-flex items-center gap-2 px-2 py-1 bg-red-200 rounded-full">
+                <div className="bg-red-500 rounded-full size-2"></div>Out of stock
                 </div>
               </div>
             )}
@@ -204,7 +208,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               onClick={handleAddtoCart}
               className="bg-green-500 hover:bg-green-400 disabled:bg-gray-300"
             >
-              Add to Cart
+              Add <ShoppingCart/>
             </Button>
           </div>
         </div>
