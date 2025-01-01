@@ -14,11 +14,11 @@ const menu = [
   },
   {
     name: "Men",
-    to: "/shoes",
+    to: "/products?gender=Men",
   },
   {
     name: "Women",
-    to: "/shoes",
+    to: "/products?gender=Woman",
   },
 ];
 

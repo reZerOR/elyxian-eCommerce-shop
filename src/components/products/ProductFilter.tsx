@@ -48,10 +48,10 @@ const SearchInput = () => {
   }, [searchTerm, router]);
 
   return (
-    <div className="flex items-center bg-white rounded-md">
+    <div className="flex items-center bg-white border rounded-md">
       <SearchIcon size={18} className="ml-2" />
       <Input
-        className="bg-white border-white focus-visible:ring-0"
+        className="border-none shadow-none focus-visible:ring-0"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search by name"
@@ -111,8 +111,8 @@ const ProductFilterDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" >
-          <Filter className="h-4 w-4" /> Filters
+        <Button variant="ghost" className="h-full" >
+          <Filter className="size-4" /> Filters
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -158,8 +158,8 @@ const ProductFilterDialog = () => {
           />
         </div>
         <DialogFooter>
-          <Button type="submit" className="bg-red-500" onClick={handleSave}>
-            Apply Filters
+          <Button type="submit" className="text-white bg-red-800 shadow-none hover:bg-red-900" onClick={handleSave}>
+            Apply
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -169,9 +169,9 @@ const ProductFilterDialog = () => {
 
 const ProductFilter = () => {
   return (
-    <div className="w-full rounded-xl p-2 bg-red-500 space-y-4">
+    <div className="w-full space-y-4 rounded-xl">
       <div className="flex gap-2">
-        <div className="flex-1">
+        <div className="w-full max-w-96">
           <SearchInput />
         </div>
         <ProductFilterDialog />

@@ -32,15 +32,15 @@ export function Footer() {
   const menu = [
     {
       name: "Shoes",
-      to: "/shoes",
+      to: "/products",
     },
     {
       name: "Men",
-      to: "/shoes",
+      to: "/products?gender=Men",
     },
     {
       name: "Women",
-      to: "/shoes",
+      to: "/products?gender=Women",
     },
   ];
 
@@ -60,11 +60,11 @@ export function Footer() {
   ];
   return (
     <footer className="bg-orange-100 z-[-1] text-orange-800 py-8 overflow-hidden">
-      <div className="container relative mx-auto px-4">
-        <div className="absolute -bottom-1/2 z-0 -right-1/4 w-2/3 h-full bg-orange-200 rounded-full opacity-50 transform rotate-45"></div>
-        <div className="flex flex-wrap z-10 items-center justify-between relative">
-          <div className="w-full md:w-auto mb-6 md:mb-0">
-            <div className="transform -rotate-3 bg-white p-3 rounded-lg shadow-lg inline-block">
+      <div className="container relative px-4 mx-auto">
+        <div className="absolute z-0 w-2/3 h-full transform rotate-45 bg-orange-200 rounded-full opacity-50 -bottom-1/2 -right-1/4"></div>
+        <div className="relative z-10 flex flex-wrap items-center justify-between">
+          <div className="w-full mb-6 md:w-auto md:mb-0">
+            <div className="inline-block p-3 transform bg-white rounded-lg shadow-lg -rotate-3">
               <div className="flex gap-1">
                 <Image
                   src={logo}
@@ -83,13 +83,13 @@ export function Footer() {
               </div>
             </div>
           </div>
-          <div className="w-full md:w-auto mb-6 md:mb-0">
-            <nav className="flex flex-wrap font-semibold tracking-wide justify-center md:justify-end gap-x-6 gap-y-2">
+          <div className="w-full mb-6 md:w-auto md:mb-0">
+            <nav className="flex flex-wrap justify-center font-semibold tracking-wide md:justify-end gap-x-6 gap-y-2">
               {menu.map((item, idx) => (
                 <Link
                   key={idx}
                   href={item.to}
-                  className="hover:text-orange-600 transition-colors"
+                  className="transition-colors hover:text-orange-600"
                 >
                   {item.name}
                 </Link>
@@ -97,8 +97,8 @@ export function Footer() {
             </nav>
           </div>
         </div>
-        <div className="mt-8 flex flex-wrap z-10 items-center justify-between relative">
-          <div className="w-full md:w-auto mb-4 md:mb-0">
+        <div className="relative z-10 flex flex-wrap items-center justify-between mt-8">
+          <div className="w-full mb-4 md:w-auto md:mb-0">
               <p className="font-bold font-syne">Elyxian</p>
               {contacts.map((item, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -107,18 +107,18 @@ export function Footer() {
                 </div>
               ))}
           </div>
-          <div className="flex flex-col-reverse gap-2 items-center">
-            <div className="w-full md:w-auto text-sm">
+          <div className="flex flex-col-reverse items-center gap-2">
+            <div className="w-full text-sm md:w-auto">
               <p>&copy; {currentYear} Elyxian. All rights reserved.</p>
             </div>
-            <div className="w-full md:w-auto mt-4 md:mt-0 flex gap-4">
+            <div className="flex w-full gap-4 mt-4 md:w-auto md:mt-0">
               {socialLinks.map((link) => (
                 <a
                   key={link.url}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-orange-600 transition-colors"
+                  className="transition-colors hover:text-orange-600"
                 >
                   {link.icon}
                 </a>
