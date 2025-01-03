@@ -13,6 +13,7 @@ import { useCart } from "@/store/useCart";
 import { CartItem } from "./cartItem";
 import { ShoppingCart } from "lucide-react";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
+import Link from "next/link";
 
 export function CartSheet() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,7 @@ export function CartSheet() {
                   item={item}
                 />
               ))}
-              <Scrollbar orientation="vertical"/>
+              <Scrollbar orientation="vertical" />
             </ScrollArea>
             <Separator className="my-4" />
             <div className="space-y-4">
@@ -51,15 +52,17 @@ export function CartSheet() {
                   ${calculateTotal().toFixed(2)}
                 </span>
               </div>
-              <Button
-                className="w-full"
-                onClick={() => {
-                  // Implement checkout logic here
-                  console.log("Proceeding to checkout");
-                }}
-              >
-                Checkout
-              </Button>
+              <Link href={"/checkout"}>
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    // Implement checkout logic here
+                    console.log("Proceeding to checkout");
+                  }}
+                >
+                  Checkout
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 className="w-full"
