@@ -1,31 +1,61 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useCart } from '@/store/useCart'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useCart } from "@/store/useCart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { districts } from "bd-geojs";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  phone: z.string().min(11, { message: "Phone number must be at least 11 digits." }),
+  phone: z
+    .string()
+    .regex(/^01\d{9}$/, {
+      message: "Phone number must start with '01' and be 11 digits long.",
+    }),
+
   email: z.string().email({ message: "Invalid email address." }),
-  address: z.string().min(5, { message: "Address must be at least 5 characters." }),
+  address: z
+    .string()
+    .min(5, { message: "Address must be at least 5 characters." }),
   city: z.string().min(2, { message: "City must be at least 2 characters." }),
   notes: z.string().optional(),
   deliveryOption: z.enum(["cashOnDelivery"]),
-  deliveryCharge: z.enum(["60", "120"])
-})
+  deliveryCharge: z.enum(["60", "120"]),
+});
 
 export default function CheckoutPage() {
-  const { cart, calculateTotal } = useCart()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { cart, calculateTotal } = useCart();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,33 +67,33 @@ export default function CheckoutPage() {
       city: "",
       notes: "",
       deliveryOption: "cashOnDelivery",
-      deliveryCharge: "60"
+      deliveryCharge: "60",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     // Here you would typically send the form data and cart information to your backend
-    console.log(values)
-    console.log(cart)
+    console.log(values);
+    console.log(cart);
     // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
-      alert("Order placed successfully!")
-    }, 2000)
+    // setTimeout(() => {
+    //   setIsSubmitting(false)
+    //   alert("Order placed successfully!")
+    // }, 2000)
   }
 
-  const subtotal = calculateTotal()
-  const deliveryCharge = form.watch("deliveryCharge") === "60" ? 60 : 120
-  const total = subtotal + deliveryCharge
+  const subtotal = calculateTotal();
+  const deliveryCharge = form.watch("deliveryCharge") === "60" ? 60 : 120;
+  const total = subtotal + deliveryCharge;
 
   return (
     <div className="container py-10 mx-auto">
       <h1 className="mb-8 text-3xl font-bold">Checkout</h1>
-      <div className="flex flex-col gap-8 md:flex-row">
+      <div className="flex flex-col gap-4 md:flex-row">
         <div className="w-full md:w-2/3">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -110,7 +140,7 @@ export default function CheckoutPage() {
                   <FormItem>
                     <FormLabel>Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="123 Main St" {...field} />
+                      <Textarea placeholder="Give your address..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,9 +152,23 @@ export default function CheckoutPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Chittagong" {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your city" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {districts.map((item) => (
+                          <SelectItem key={item.name} value={item.name}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -136,7 +180,10 @@ export default function CheckoutPage() {
                   <FormItem>
                     <FormLabel>Notes (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Any special instructions..." {...field} />
+                      <Textarea
+                        placeholder="Any special instructions..."
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -216,8 +263,13 @@ export default function CheckoutPage() {
             <CardContent>
               <ul className="space-y-2">
                 {cart.map((item) => (
-                  <li key={`${item._id}-${item.selectedSize}`} className="flex justify-between">
-                    <span>{item.title} ({item.selectedSize}) x{item.quantity}</span>
+                  <li
+                    key={`${item._id}-${item.selectedSize}`}
+                    className="flex justify-between"
+                  >
+                    <span>
+                      {item.title} ({item.selectedSize}) x{item.quantity}
+                    </span>
                     <span>৳{item.price * item.quantity}</span>
                   </li>
                 ))}
@@ -241,6 +293,5 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
