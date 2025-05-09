@@ -53,11 +53,13 @@ const formSchema = z.object({
   deliveryCharge: z.enum(["60", "120"]),
 });
 
+export type TCustomerDetails = z.infer<typeof formSchema>;
+
 export default function CheckoutPage() {
   const { cart, calculateTotal } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<TCustomerDetails>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -70,22 +72,41 @@ export default function CheckoutPage() {
       deliveryCharge: "60",
     },
   });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true);
-    // Here you would typically send the form data and cart information to your backend
-    console.log(values);
-    console.log(cart);
-    // Simulate API call
-    // setTimeout(() => {
-    //   setIsSubmitting(false)
-    //   alert("Order placed successfully!")
-    // }, 2000)
-  }
-
+  
   const subtotal = calculateTotal();
   const deliveryCharge = form.watch("deliveryCharge") === "60" ? 60 : 120;
   const total = subtotal + deliveryCharge;
+
+  async function onSubmit(values: TCustomerDetails) {
+    setIsSubmitting(true);
+
+    console.log(values);
+    console.log(cart);
+    const customerDetails = {
+      ...values,
+    }
+    const productDetails = cart
+
+    const response = await fetch("/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        customerDetails,
+        productDetails,
+        total,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Error creating order:", error);
+    }
+
+    const data = await response.json();
+    console.log("Order created successfully:", data);
+  }
 
   return (
     <div className="container py-10 mx-auto">
@@ -249,7 +270,8 @@ export default function CheckoutPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit">
+              {/* <Button type="submit" disabled={isSubmitting}> */}
                 {isSubmitting ? "Placing Order..." : "Place Order"}
               </Button>
             </form>
