@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { StaticImageData } from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { Plus, Minus, Cross, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,8 @@ import { fetcher } from "@/lib/utils";
 import { TProduct } from "@/models/product.model";
 import { useCart } from "@/store/useCart";
 
-export default function ProductDetails({ params }: { params: { id: string } }) {
+export default function ProductDetails(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const { id } = params;
   const { data: product, isLoading } = useSWR<{
     success: boolean;

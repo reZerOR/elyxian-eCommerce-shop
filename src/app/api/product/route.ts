@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   }
 }
 export async function GET(req: NextRequest) {
-  cookies()
+  await cookies()
   const searchParams = req.nextUrl.searchParams
   const limit = searchParams.get('limit')
   

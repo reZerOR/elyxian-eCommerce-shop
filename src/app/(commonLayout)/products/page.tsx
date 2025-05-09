@@ -4,18 +4,19 @@ import ProductCard from "@/components/common/ProductCard";
 import { TProduct } from "@/models/product.model";
 import { fetchProductData } from "@/components/home/NewArrival";
 
-const ClientProductPage = async ({
-  searchParams,
-}: {
-  searchParams: Record<string, string>;
-}) => {
+const ClientProductPage = async (
+  props: {
+    searchParams: Promise<Record<string, string>>;
+  }
+) => {
+  const searchParams = await props.searchParams;
   // Parse URL parameters
   const categories = searchParams.category?.split(",") || [];
   const genders = searchParams.gender?.split(",") || [];
   const priceSort = searchParams.priceFilter || "";
   const searchQuery = searchParams.search?.toLowerCase() || "";
   const productData = await fetchProductData();
-  
+
 
   // Filter function
   const filterProducts = (products: TProduct[]) => {

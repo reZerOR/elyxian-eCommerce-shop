@@ -4,7 +4,7 @@ import { ProductModel, TProduct } from "@/models/product.model";
 import { cookies, headers } from "next/headers";
 
 export const getProducts = async () => {
-  cookies(); //added because its prevent caching by default
+  await cookies(); //added because its prevent caching by default
   await connectToDatabase();
 
   const result = await ProductModel.find();

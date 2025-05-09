@@ -3,10 +3,11 @@ import { ProductModel } from "@/models/product.model";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, {params}:{params: {id: string}}) {
-  cookies()
+export async function GET(req: NextRequest, props:{params: Promise<{id: string}>}) {
+  const params = await props.params;
+  await cookies()
   console.log(1);
-  
+
   await connectToDatabase();
   try {
     const result = await ProductModel.findById(params.id, { isDeleted: false })
