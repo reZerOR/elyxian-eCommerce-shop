@@ -49,7 +49,7 @@ export function CartSheet() {
               <div className="flex items-center justify-between">
                 <span className="font-medium">Total</span>
                 <span className="font-medium">
-                  ${calculateTotal().toFixed(2)}
+                  Tk {calculateTotal().toFixed(2)}
                 </span>
               </div>
               <Link href={"/checkout"}>

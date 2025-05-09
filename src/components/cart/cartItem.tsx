@@ -24,7 +24,7 @@ export function CartItem({ item }: CartItemProps) {
         <div>
           <h3 className="font-medium">{item.title}</h3>
           <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
-          <p className="text-sm font-medium">${item.price.toFixed(2)}</p>
+          <p className="text-sm font-medium">Tk {item.price.toFixed(2)}</p>
         </div>
       </div>
       <div className="flex items-center space-x-2">
