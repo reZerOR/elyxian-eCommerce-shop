@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { model, models, Schema } from "mongoose";
 import { TProduct } from "./product.model";
 
 export interface TOrder {
@@ -9,7 +9,7 @@ export interface TOrder {
   city: string;
   address: string;
   notes?: string;
-  deliveryOptions: string;
+  deliveryOption: string;
   deliveryCharge: number;
   total: number;
   products: {
@@ -29,6 +29,8 @@ export interface TOrder {
   coupon?: string;
   createdAt?: string;
   updatedAt?: string;
+  transactionId?: string;
+  deliveryPayment?: string;
 }
 
 const orderSchema = new Schema<TOrder>(
@@ -56,7 +58,7 @@ const orderSchema = new Schema<TOrder>(
     notes: {
       type: String,
     },
-    deliveryOptions: {
+    deliveryOption: {
       type: String,
       required: true,
     },
@@ -109,10 +111,16 @@ const orderSchema = new Schema<TOrder>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Coupon",
     },
+    transactionId: {
+      type: String,
+    },
+    deliveryPayment: {
+      type: String,
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields
   }
 );
 
-module.exports = mongoose.models.Order || mongoose.model("Order", orderSchema);
+export const OrderModel = models.Order || model<TOrder>("Order", orderSchema);

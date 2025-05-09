@@ -34,14 +34,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { districts } from "bd-geojs";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  phone: z
-    .string()
-    .regex(/^01\d{9}$/, {
-      message: "Phone number must start with '01' and be 11 digits long.",
-    }),
+  phone: z.string().regex(/^01\d{9}$/, {
+    message: "Phone number must start with '01' and be 11 digits long.",
+  }),
 
   email: z.string().email({ message: "Invalid email address." }),
   address: z
@@ -56,7 +55,7 @@ const formSchema = z.object({
 export type TCustomerDetails = z.infer<typeof formSchema>;
 
 export default function CheckoutPage() {
-  const { cart, calculateTotal } = useCart();
+  const { cart, clearCart, calculateTotal } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<TCustomerDetails>({
@@ -72,7 +71,7 @@ export default function CheckoutPage() {
       deliveryCharge: "60",
     },
   });
-  
+
   const subtotal = calculateTotal();
   const deliveryCharge = form.watch("deliveryCharge") === "60" ? 60 : 120;
   const total = subtotal + deliveryCharge;
@@ -84,28 +83,34 @@ export default function CheckoutPage() {
     console.log(cart);
     const customerDetails = {
       ...values,
+    };
+    const productDetails = cart;
+
+    try {
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerDetails,
+          productDetails,
+          total,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.data) {
+        form.reset();
+        clearCart();
+        toast.success("Order placed successfully!");
+      }
+    } catch (error) {
+      toast.error("Error placing order");
+      console.error("Error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-    const productDetails = cart
-
-    const response = await fetch("/api/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        customerDetails,
-        productDetails,
-        total,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Error creating order:", error);
-    }
-
-    const data = await response.json();
-    console.log("Order created successfully:", data);
   }
 
   return (
@@ -270,8 +275,7 @@ export default function CheckoutPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit">
-              {/* <Button type="submit" disabled={isSubmitting}> */}
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Placing Order..." : "Place Order"}
               </Button>
             </form>
