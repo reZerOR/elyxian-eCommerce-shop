@@ -13,7 +13,7 @@ export const getProducts = async () => {
   return result;
 };
 
-export const addProduct = async (payload: Omit<TProduct, "isDeleted">) => {
+export const addProduct = async (payload: Omit<TProduct, "isDeleted" | "_id">) => {
   await connectToDatabase();
   try {
     const result = await ProductModel.create(payload);
