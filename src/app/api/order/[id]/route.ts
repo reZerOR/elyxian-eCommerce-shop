@@ -6,12 +6,12 @@ import { connectToDatabase } from "@/configs/mongoose";
 // GET a single order
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
 
-    const order = await OrderModel.findById(params.id).populate({
+    const order = await OrderModel.findById((await params).id).populate({
       path: "products.productId",
       model: "Product",
     });
@@ -33,7 +33,7 @@ export async function GET(
 // UPDATE an order
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
@@ -41,7 +41,9 @@ export async function PATCH(
     const body = await request.json();
 
     const updatedOrder = await OrderModel.findByIdAndUpdate(
-      params.id,
+      (
+        await params
+      ).id,
       { $set: body },
       { new: true }
     );
@@ -63,12 +65,12 @@ export async function PATCH(
 // DELETE an order
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
 
-    const deletedOrder = await OrderModel.findByIdAndDelete(params.id);
+    const deletedOrder = await OrderModel.findByIdAndDelete((await params).id);
 
     if (!deletedOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
