@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import {Syne, Inter} from 'next/font/google'
+import { Syne, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -9,13 +10,13 @@ export const metadata: Metadata = {
 };
 
 const syne = Syne({
-  subsets: ['latin'],
-  variable: '--font-syne'
-})
+  subsets: ["latin"],
+  variable: "--font-syne",
+});
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter'
-})
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export default function RootLayout({
   children,
@@ -27,8 +28,10 @@ export default function RootLayout({
       <body
         className={`${syne.variable} ${inter.variable} antialiased font-inter`}
       >
-        <Toaster richColors position="top-center" duration={2000}/>
-        {children}
+        <SessionProvider>
+          <Toaster richColors position="top-center" duration={2000} />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

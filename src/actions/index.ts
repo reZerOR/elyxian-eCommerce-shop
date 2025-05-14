@@ -1,4 +1,5 @@
 "use server";
+import { signIn, signOut } from "@/auth";
 import { connectToDatabase } from "@/configs/mongoose";
 import { ProductModel, TProduct } from "@/models/product.model";
 import { cookies, headers } from "next/headers";
@@ -13,7 +14,9 @@ export const getProducts = async () => {
   return result;
 };
 
-export const addProduct = async (payload: Omit<TProduct, "isDeleted" | "_id">) => {
+export const addProduct = async (
+  payload: Omit<TProduct, "isDeleted" | "_id">
+) => {
   await connectToDatabase();
   try {
     const result = await ProductModel.create(payload);
@@ -27,4 +30,11 @@ export const addProduct = async (payload: Omit<TProduct, "isDeleted" | "_id">) =
     console.log(error);
     return error;
   }
+};
+
+export const SignIn = async () => {
+  await signIn("google");
+};
+export const SignOut = async () => {
+  await signOut();
 };
