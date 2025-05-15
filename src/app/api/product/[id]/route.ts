@@ -5,9 +5,6 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, props:{params: Promise<{id: string}>}) {
   const params = await props.params;
-  await cookies()
-  console.log(1);
-
   await connectToDatabase();
   try {
     const result = await ProductModel.findById(params.id, { isDeleted: false })

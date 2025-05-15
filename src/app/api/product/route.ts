@@ -1,13 +1,23 @@
+import { auth } from "@/auth";
 import { connectToDatabase } from "@/configs/mongoose";
 import { ProductModel, TProduct } from "@/models/product.model";
 import { cookies } from "next/headers";
-import { NextRequest} from "next/server";
+import { NextRequest } from "next/server";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(req: NextRequest) {
-  await connectToDatabase();
   const productData: Omit<TProduct, "isDeleted"> = await req.json();
   try {
+    const userData = await auth();
+    if (userData?.user?.role !== "admin") {
+      return Response.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 403 }
+      );
+    }
+    await connectToDatabase();
     const result = await ProductModel.create(productData);
     return Response.json({ success: true, data: result });
   } catch (error) {
@@ -16,13 +26,15 @@ export async function POST(req: NextRequest) {
   }
 }
 export async function GET(req: NextRequest) {
-  await cookies()
-  const searchParams = req.nextUrl.searchParams
-  const limit = searchParams.get('limit')
-  
+  await cookies();
+  const searchParams = req.nextUrl.searchParams;
+  const limit = searchParams.get("limit");
+
   await connectToDatabase();
   try {
-    const result = await ProductModel.find({ isDeleted: false }).sort().limit(Number(limit))
+    const result = await ProductModel.find({ isDeleted: false })
+      .sort()
+      .limit(Number(limit));
     return Response.json({ success: true, data: result });
   } catch (error) {
     return Response.json({
