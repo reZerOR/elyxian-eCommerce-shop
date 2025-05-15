@@ -55,6 +55,8 @@ const navlinks = menu.map((item, idx) => (
 const Navbar = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data } = useSession();
+  console.log("session data", data);
+
   const user = data?.user;
   const isAdmin = user?.role === "admin";
 
@@ -133,9 +135,9 @@ const Navbar = () => {
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="items-center hidden gap-2 bg-orange-100 md:flex hover:bg-orange-200"
+                  className="items-center hidden ml-4 bg-orange-100 md:flex hover:bg-orange-200"
                 >
-                  <User className="w-4 h-4" />
+                  <User />
                   <span>Login</span>
                 </Button>
               </DialogTrigger>

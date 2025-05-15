@@ -6,6 +6,7 @@ import UserModel from "./models/user.model";
 declare module "next-auth" {
   interface Session {
     user: {
+      id: string;
       role: string;
     } & DefaultSession["user"];
   }
@@ -84,6 +85,8 @@ export const authOptions = {
   callbacks: {
     jwt({ token, user }) {
       if (user) {
+        console.log("JWT callback user:", user);
+        token.id = user.id;
         token.role = user.role;
       }
       return token;
@@ -91,6 +94,7 @@ export const authOptions = {
     session({ session, token }) {
       if (session.user) {
         session.user.role = token.role as string;
+        session.user.id = token.id as string;
       }
       return session;
     },
