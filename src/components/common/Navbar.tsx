@@ -2,7 +2,15 @@
 import logo from "@/assets/brand-logo.png";
 import logotext from "@/assets/brand-text.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { MenuIcon, User, LogOut, LayoutDashboard } from "lucide-react";
+import {
+  MenuIcon,
+  User,
+  LogOut,
+  LayoutDashboard,
+  Box,
+  ClipboardList,
+  PackagePlus,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { CartSheet } from "../cart/cartSheet";
@@ -25,7 +33,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
 import { SignIn } from "@/actions";
-import { useState } from "react";
+import { ElementType, useState } from "react";
 
 const menu = [
   {
@@ -42,6 +50,23 @@ const menu = [
   },
 ];
 
+const adminMenu: { herf: string; name: string; icon: ElementType }[] = [
+  {
+    herf: "/dashboard/users",
+    name: "Users",
+    icon: User,
+  },
+  {
+    herf: "/dashboard/new-product",
+    name: "Add Product",
+    icon: PackagePlus,
+  },
+  {
+    herf: "/dashboard/orders",
+    name: "Orders",
+    icon: ClipboardList,
+  },
+];
 const navlinks = menu.map((item, idx) => (
   <Link
     key={idx}
@@ -110,17 +135,19 @@ const Navbar = () => {
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                {isAdmin && (
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
-                      <LayoutDashboard className="w-4 h-4" />
-                      <span>Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-                )}
+                {isAdmin &&
+                  adminMenu.map((item, idx) => (
+                    <DropdownMenuItem key={idx} asChild>
+                      <Link
+                        href={item.herf}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => signOut()}
                   className="flex items-center gap-2 cursor-pointer"
@@ -176,15 +203,18 @@ const Navbar = () => {
                     <span>Login</span>
                   </Button>
                 )}
-                {user && isAdmin && (
-                  <Link
-                    href="/dashboard"
-                    className="flex items-center gap-2 px-3 py-2 mt-2 font-medium text-black transition-all duration-300 ease-in-out rounded-full hover:bg-orange-200"
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    <span>Dashboard</span>
-                  </Link>
-                )}
+                {user &&
+                  isAdmin &&
+                  adminMenu.map((item, idx) => (
+                    <Link
+                      href={item.herf}
+                      key={idx}
+                      className="flex items-center gap-2 px-3 py-2 mt-2 font-medium text-black transition-all duration-300 ease-in-out rounded-full hover:bg-orange-200"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span>{item.name}</span>
+                    </Link>
+                  ))}
                 {user && (
                   <Button
                     variant="outline"
