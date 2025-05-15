@@ -45,7 +45,7 @@ const AddButton = ({ addFun, text }: { addFun: () => void; text: string }) => {
       className="w-full"
       size="default"
     >
-      <Plus className="h-4 w-4 mr-2" /> {text}
+      <Plus className="w-4 h-4 mr-2" /> {text}
     </Button>
   );
 };
@@ -80,9 +80,6 @@ export default function MyForm() {
     control: form.control,
     name: "images",
   });
-
-  console.log("rendered");
-
   async function onSubmit(values: FormValues) {
     const loadingToast = toast.loading("Adding Product");
     try {
@@ -108,7 +105,7 @@ export default function MyForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 max-w-3xl mx-auto py-10"
+          className="max-w-3xl py-10 mx-auto space-y-8"
         >
           <CustomInput
             control={form.control}
