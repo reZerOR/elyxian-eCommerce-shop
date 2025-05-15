@@ -31,6 +31,7 @@ export interface TOrder {
   updatedAt?: string;
   transactionId?: string;
   deliveryPayment?: string;
+  userId?: string;
 }
 
 const orderSchema = new Schema<TOrder>(
@@ -116,6 +117,10 @@ const orderSchema = new Schema<TOrder>(
     },
     deliveryPayment: {
       type: String,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {

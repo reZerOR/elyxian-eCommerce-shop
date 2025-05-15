@@ -1,4 +1,5 @@
 import { TCustomerDetails } from "@/app/(commonLayout)/checkout/page";
+import { auth } from "@/auth";
 import { connectToDatabase } from "@/configs/mongoose";
 import { OrderModel } from "@/models/order.model";
 import { TCartProduct } from "@/store/useCart";
@@ -14,6 +15,12 @@ export async function POST(request: NextRequest) {
     productDetails: TCartProduct[];
     total: number;
   } = await request.json();
+  const userData = await auth();
+  const user: any = {};
+  if (userData?.user) {
+    user.userId = userData.user.id;
+  }
+
   const productTotal =
     productDetails.reduce(
       (acc, product) => acc + product.price * product.quantity,
@@ -38,6 +45,7 @@ export async function POST(request: NextRequest) {
     products,
     total,
     status: "pending",
+    ...user,
   };
   await connectToDatabase();
   try {
@@ -61,6 +69,15 @@ export async function POST(request: NextRequest) {
 }
 export async function GET() {
   try {
+    const userData = await auth();
+    if (userData?.user?.role !== "admin") {
+      return Response.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 403 }
+      );
+    }
     await connectToDatabase();
 
     const orders = await OrderModel.find({})

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { OrderModel } from "@/models/order.model";
 import { connectToDatabase } from "@/configs/mongoose";
+import { auth } from "@/auth";
 
 // Connect to MongoDB
 // GET a single order
@@ -9,6 +10,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const userData = await auth();
+    if (userData?.user?.role !== "admin") {
+      return Response.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 403 }
+      );
+    }
     await connectToDatabase();
 
     const order = await OrderModel.findById((await params).id).populate({
@@ -36,6 +46,15 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const userData = await auth();
+    if (userData?.user?.role !== "admin") {
+      return Response.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 403 }
+      );
+    }
     await connectToDatabase();
 
     const body = await request.json();
@@ -68,6 +87,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const userData = await auth();
+    if (userData?.user?.role !== "admin") {
+      return Response.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 403 }
+      );
+    }
     await connectToDatabase();
 
     const deletedOrder = await OrderModel.findByIdAndDelete((await params).id);

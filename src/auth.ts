@@ -6,14 +6,16 @@ import UserModel from "./models/user.model";
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string;
+      _id: string;
       role: string;
     } & DefaultSession["user"];
   }
   interface User {
     role: string;
+    _id: string;
   }
 }
+const adminEmail = ["gkraihan14k@gmail.com"]
 export const authOptions = {
   providers: [
     Google({
@@ -29,7 +31,7 @@ export const authOptions = {
         email: user.email,
         name: user.name,
         image: user.image,
-        role: "user",
+        role: adminEmail.includes(user.email) ? "admin" : "user",
       });
       return newUser.toObject();
     },
@@ -86,7 +88,7 @@ export const authOptions = {
     jwt({ token, user }) {
       if (user) {
         console.log("JWT callback user:", user);
-        token.id = user.id;
+        token.id = user._id.toString();
         token.role = user.role;
       }
       return token;
