@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { connectToDatabase } from "@/configs/mongoose";
 import { OrderModel } from "@/models/order.model";
 import { TCartProduct } from "@/store/useCart";
+import { notifyOrderCreated } from "@/utils/order-notification";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -47,9 +48,10 @@ export async function POST(request: NextRequest) {
     status: "pending",
     ...user,
   };
-  await connectToDatabase();
   try {
+    await connectToDatabase();
     const orderToDb = await OrderModel.create(order);
+    await notifyOrderCreated(orderToDb);
     return Response.json(
       {
         message: "Order created successfully",
